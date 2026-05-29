@@ -14,7 +14,7 @@ class Listener < Redmine::Hook::Listener
     return if issue.is_private?
 
     title = "#{escape issue.project}"
-    text = "#{escape issue.author} #{l(:issue_created)} [#{escape issue}](#{object_url issue})"
+    text = "#{escape issue.author} #{l(:issue_created)} [#{escape issue}](#{object_url issue}) #{mentions issue.description}"
 
     facts = {
       I18n.t("field_status") => escape(issue.status.to_s),
@@ -22,7 +22,6 @@ class Listener < Redmine::Hook::Listener
       I18n.t("field_assigned_to") => escape(issue.assigned_to.to_s)
     }
 
-    sections = issue.description if issue.description
     facts[I18n.t("field_watcher")] = escape(issue.watcher_users.join(', ')) if Setting.plugin_redmine_microsoftteams['display_watchers'] == 'yes'
 
     speak title, text, sections, facts, url
@@ -40,9 +39,8 @@ class Listener < Redmine::Hook::Listener
     return unless url
 
     title = "#{escape issue.project}"
-    text = "#{escape journal.user.to_s} #{l(:issue_updated)} [#{escape issue}](#{object_url issue})"
+    text = "#{escape journal.user.to_s} #{l(:issue_updated)} [#{escape issue}](#{object_url issue}) #{mentions issue.description}"
 
-    sections = journal.notes if journal.notes
     facts = get_facts(journal)
 
     speak title, text, sections, facts, url
