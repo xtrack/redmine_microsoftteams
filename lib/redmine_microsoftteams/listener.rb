@@ -24,6 +24,8 @@ class Listener < Redmine::Hook::Listener
 
     facts[I18n.t("field_watcher")] = escape(issue.watcher_users.join(', ')) if Setting.plugin_redmine_microsoftteams['display_watchers'] == 'yes'
 
+    sections = nil
+    
     speak title, text, sections, facts, url
   end
 
@@ -42,6 +44,8 @@ class Listener < Redmine::Hook::Listener
     text = "#{escape journal.user.to_s} #{l(:issue_updated)} [#{escape issue}](#{object_url issue}) #{mentions issue.description}"
 
     facts = get_facts(journal)
+
+    sections = nil
 
     speak title, text, sections, facts, url
   end
